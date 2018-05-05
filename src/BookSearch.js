@@ -1,30 +1,71 @@
 import React, { Component } from 'react'
+import * as BooksAPI from './BooksAPI'
+import Book from './Book'
+import {Link} from 'react-router-dom'
 
 class BookSearch extends Component
 {
+  state ={
+    searchResult:[]
+  }
+
+  OnSwitchingBookShelf = (book,value)=>
+  {
+    let currentSearchResult = this.state.searchResult;
+    let bookToUpdate = currentSearchResult.find(everyBook => everyBook.id === book.id);
+
+    this.props.OnChangeBookShelf(bookToUpdate,value);
+    this.setState(()=>
+    {
+      bookToUpdate.shelf = value;
+      searchResult:currentSearchResult
+    });
+  }
+
+  getBooks = (searchTerm)=>{
+    if(!searchTerm)
+    {
+      this.setState(()=> {searchResult: []});
+      return;
+    }
+    BooksAPI.search(searchTerm).then((bookObjects)=>
+    {
+      if(!bookObjects || bookObjects.error)
+      {
+        this.setState(()=> {searchResult: []});
+        return;
+      }
+      console.log(bookObjects);
+      bookObjects = bookObjects.map((book) => {
+        let bookInShelf = this.props.BooksCurrentlyInShelves.find(bookInShelf => bookInShelf.id === book.id);
+        book.shelf= bookInShelf ? bookInShelf.shelf : 'none';
+        return book;
+      });
+      this.setState({ searchResult:bookObjects });
+    })
+  }
+
   render(){
     return(
     <div className="search-books">
       <div className="search-books-bar">
-
-        <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+        <Link className="close-search" to="/">Close</Link>
         <div className="search-books-input-wrapper">
-          {/*
-            NOTES: The search from BooksAPI is limited to a particular set of search terms.
-            You can find these search terms here:
-            https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-            However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-            you don't find a specific author or title. Every search is limited by search terms.
-          */}
-          <input type="text" placeholder="Search by title or author"/>
-
+          <input type="text" placeholder="Search by title or author" onInput={(event) => this.getBooks(event.target.value)}/>
         </div>
       </div>
       <div className="search-books-results">
-        <ol className="books-grid"></ol>
+        <ol className="books-grid">
+          {this.state.searchResult && this.state.searchResult.map((book) => book &&
+            (
+              <li key ={book.id}>
+              <Book book={book} OnChangeBookShelf= {this.OnSwitchingBookShelf} />
+              </li>
+            ))}
+        </ol>
       </div>
     </div>
   );
+}
 }
 export default BookSearch
