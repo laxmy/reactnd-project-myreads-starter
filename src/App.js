@@ -47,7 +47,7 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
         <Route exact path= '/search' render={() =>(
-        <BookSearch BooksCurrentlyInShelves = {this.state.books} OnChangeBookShelf = {this.ChangeBookShelf} />
+        <BookSearch booksCurrentlyInShelves = {this.state.books} onChangeBookShelf = {this.ChangeBookShelf} />
         )} />
         <Route exact path='/' render={() => (
           <div className="list-books">
@@ -56,9 +56,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <BookShelf Books ={ this.state.books.filter((book) => book.shelf ==='currentlyReading')} ShelfTitle ="Currently Reading" OnChangeBookShelf = {this.ChangeBookShelf}/>
-                <BookShelf Books ={ this.state.books.filter((book) => book.shelf ==='wantToRead')} ShelfTitle ="Want to Read" OnChangeBookShelf = {this.ChangeBookShelf}/>
-                <BookShelf Books ={ this.state.books.filter((book) => book.shelf ==='read')} ShelfTitle ="Read" OnChangeBookShelf = {this.ChangeBookShelf}/>
+                <BookShelf books ={ this.state.books.filter((book) => book.shelf ==='currentlyReading')} shelfTitle ="Currently Reading" onChangeBookShelf = {this.ChangeBookShelf}/>
+                <BookShelf books ={ this.state.books.filter((book) => book.shelf ==='wantToRead')} shelfTitle ="Want to Read" onChangeBookShelf = {this.ChangeBookShelf}/>
+                <BookShelf books ={ this.state.books.filter((book) => book.shelf ==='read')} shelfTitle ="Read" onChangeBookShelf = {this.ChangeBookShelf}/>
               </div>
             </div>
             <div className="open-search">

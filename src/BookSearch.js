@@ -1,46 +1,51 @@
 import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 import Book from './Book'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 
 class BookSearch extends Component
 {
   state ={
     searchResult:[]
   }
-
+/*
+@description: Switches bookshelf for books currently in the search result. Also uses the prop function to update the bookshelves with the new value to keep everything in sync
+*/
   OnSwitchingBookShelf = (book,value)=>
   {
     let currentSearchResult = this.state.searchResult;
     let bookToUpdate = currentSearchResult.find(everyBook => everyBook.id === book.id);
 
-    this.props.OnChangeBookShelf(bookToUpdate,value);
+    this.props.onChangeBookShelf(bookToUpdate,value);
     bookToUpdate.shelf = value;
     this.setState(()=>({searchResult:currentSearchResult}));
   }
-
+  /*
+  @description: Gets books from the search API according to the search term and updates the shelves value of the SearchResult using the props.
+  */
   getBooks = (searchTerm)=>{
 
     if(!searchTerm)
     {
-      console.log("Empty search Term:"+searchTerm);
-      this.setState(()=> ({ searchResult: [] }));
+      this.setState((prevState)=> ({ searchResult: [] }));
       return;
     }
     BooksAPI.search(searchTerm).then((bookObjects)=>
     {
       if(!bookObjects || bookObjects.error)
       {
-        this.setState(()=> ({ searchResult: [] }));
+        this.setState((prevState)=> ({ searchResult: [] }));
         return;
       }
       bookObjects = bookObjects.map((book) =>
       {
-        let bookInShelf = this.props.BooksCurrentlyInShelves.find(bookInShelf => bookInShelf.id === book.id);
+        let bookInShelf = this.props.booksCurrentlyInShelves.find(bookInShelf => bookInShelf.id === book.id);
         book.shelf= bookInShelf ? bookInShelf.shelf : 'none';
         return book;
       });
-      this.setState(()=>({ searchResult:bookObjects }));
+      this.setState((prevState)=>({ searchResult:bookObjects }));
     })
   }
 
@@ -66,5 +71,9 @@ class BookSearch extends Component
     </div>
   );
 }
+}
+BookSearch.propTypes = {
+  booksCurrentlyInShelves: PropTypes.array.isRequired,
+  onChangeBookShelf: PropTypes.func.isRequired,
 }
 export default BookSearch

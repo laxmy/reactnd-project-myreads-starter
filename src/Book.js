@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import PropTypes from 'prop-types'
 
 class Book extends Component
 {
@@ -10,7 +10,7 @@ class Book extends Component
           <div className="book-top">
             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${(this.props.book.imageLinks && this.props.book.imageLinks.thumbnail) ||""})` }}></div>
             <div className="book-shelf-changer">
-              <select selected="selected" value={this.props.book.shelf } onChange ={(event)=> this.props.OnChangeBookShelf(this.props.book, event.target.value)}>
+              <select selected="selected" value={this.props.book.shelf } onChange ={(event)=> this.props.onChangeBookShelf(this.props.book, event.target.value)}>
                 <option value="" disabled >Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
@@ -24,6 +24,10 @@ class Book extends Component
         </div>
     );
   }
+}
+Book.propTypes = {
+  book: PropTypes.array.isRequired,
+  onChangeBookShelf: PropTypes.func.isRequired,
 }
 
 export default Book
