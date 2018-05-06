@@ -14,14 +14,14 @@ class BooksApp extends React.Component {
   {
     BooksAPI.getAll().then(
       ((bookObjects) => {
-        this.setState({books: bookObjects });
+        this.setState(() =>({books: bookObjects }));
       })
     )
   }
 
   ChangeBookShelf = (book, value)=>
   {
-    if(book.shelf != value){
+    if(book.shelf !== value){
       //update : if value is none and book already present in shelf, remove
       //if value = anything else update it, if already in shelf or add the book to shelf
       BooksAPI.update(book, value).then(() => {
@@ -36,7 +36,7 @@ class BooksApp extends React.Component {
              book.shelf = value;
              bookToUpdate ? bookToUpdate.shelf = value : currentState.push(book);
           }
-          this.setState(()=> {books: currentState});
+          this.setState(()=> ({books: currentState}));
         })
 
     }

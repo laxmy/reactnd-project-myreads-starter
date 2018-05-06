@@ -15,33 +15,32 @@ class BookSearch extends Component
     let bookToUpdate = currentSearchResult.find(everyBook => everyBook.id === book.id);
 
     this.props.OnChangeBookShelf(bookToUpdate,value);
-    this.setState(()=>
-    {
-      bookToUpdate.shelf = value;
-      searchResult:currentSearchResult
-    });
+    bookToUpdate.shelf = value;
+    this.setState(()=>({searchResult:currentSearchResult}));
   }
 
   getBooks = (searchTerm)=>{
+
     if(!searchTerm)
     {
-      this.setState(()=> {searchResult: []});
+      console.log("Empty search Term:"+searchTerm);
+      this.setState(()=> ({ searchResult: [] }));
       return;
     }
     BooksAPI.search(searchTerm).then((bookObjects)=>
     {
       if(!bookObjects || bookObjects.error)
       {
-        this.setState(()=> {searchResult: []});
+        this.setState(()=> ({ searchResult: [] }));
         return;
       }
-      console.log(bookObjects);
-      bookObjects = bookObjects.map((book) => {
+      bookObjects = bookObjects.map((book) =>
+      {
         let bookInShelf = this.props.BooksCurrentlyInShelves.find(bookInShelf => bookInShelf.id === book.id);
         book.shelf= bookInShelf ? bookInShelf.shelf : 'none';
         return book;
       });
-      this.setState({ searchResult:bookObjects });
+      this.setState(()=>({ searchResult:bookObjects }));
     })
   }
 
