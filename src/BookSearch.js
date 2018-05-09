@@ -3,12 +3,14 @@ import * as BooksAPI from './BooksAPI'
 import Book from './Book'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import {DebounceInput} from 'react-debounce-input';
 
 
 class BookSearch extends Component
 {
   state ={
-    searchResult:[]
+    searchResult:[],
+    searchQuery:''
   }
 /*
 @description: Switches bookshelf for books currently in the search result. Also uses the prop function to update the bookshelves with the new value to keep everything in sync
@@ -23,18 +25,18 @@ class BookSearch extends Component
     this.setState(()=>({searchResult:currentSearchResult}));
   }
   /*
-  @description: Gets books from the search API according to the search term and updates the shelves value of the SearchResult using the props.
+  @description: Gets books from the search API according to the search query and updates the shelves value of the SearchResult using the props.On every response checks the current state of searchQuery before updating the Response
   */
-  getBooks = (searchTerm)=>{
-
-    if(!searchTerm)
+  getBooks = () => {
+    if(!this.state.searchQuery)
     {
       this.setState((prevState)=> ({ searchResult: [] }));
       return;
     }
-    BooksAPI.search(searchTerm).then((bookObjects)=>
+
+    BooksAPI.search(this.state.searchQuery).then((bookObjects)=>
     {
-      if(!bookObjects || bookObjects.error)
+      if(!bookObjects || bookObjects.error || !this.state.searchQuery)
       {
         this.setState((prevState)=> ({ searchResult: [] }));
         return;
@@ -49,13 +51,18 @@ class BookSearch extends Component
     })
   }
 
+  updateSearchQuery = (query) =>{
+    this.setState(()=>({searchQuery: query}));
+    this. getBooks(query);
+  }
+
   render(){
     return(
     <div className="search-books">
       <div className="search-books-bar">
         <Link className="close-search" to="/">Close</Link>
         <div className="search-books-input-wrapper">
-          <input type="text" placeholder="Search by title or author" onInput={(event) => this.getBooks(event.target.value)}/>
+        <DebounceInput minLength={1} debounceTimeout={200} placeholder="Search by title or author" onInput={(event) => this.updateSearchQuery(event.target.value)}/>
         </div>
       </div>
       <div className="search-books-results">
@@ -63,7 +70,7 @@ class BookSearch extends Component
           {this.state.searchResult && this.state.searchResult.map((book) => book &&
             (
               <li key ={book.id}>
-              <Book book={book} OnChangeBookShelf= {this.OnSwitchingBookShelf} />
+              <Book book={book} onChangeBookShelf= {this.OnSwitchingBookShelf} />
               </li>
             ))}
         </ol>
