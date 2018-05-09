@@ -11,6 +11,12 @@ class BooksApp extends React.Component {
     books:[]
   }
 
+  bookShelves =[
+    { value:'currentlyReading',name:'Currently Reading'},
+    { value:'wantToRead',name:'Want to Read'},
+    { value:'read',name:'Read'},
+    { value:'none',name:'None'}]
+
   componentDidMount()
   {
     BooksAPI.getAll().then(
@@ -46,9 +52,10 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <BookShelf books ={ this.state.books.filter((book) => book.shelf ==='currentlyReading')} shelfTitle ="Currently Reading" onChangeBookShelf = {this.ChangeBookShelf}/>
-                <BookShelf books ={ this.state.books.filter((book) => book.shelf ==='wantToRead')} shelfTitle ="Want to Read" onChangeBookShelf = {this.ChangeBookShelf}/>
-                <BookShelf books ={ this.state.books.filter((book) => book.shelf ==='read')} shelfTitle ="Read" onChangeBookShelf = {this.ChangeBookShelf}/>
+              { this.bookShelves.map(bookShelf =>
+                bookShelf.value !== 'none' && (
+                <BookShelf key ={bookShelf.value} books ={ this.state.books.filter((book) => book.shelf === bookShelf.value)} shelfTitle = {bookShelf.name} onChangeBookShelf = {this.ChangeBookShelf}/>)
+              )}
               </div>
             </div>
             <div className="open-search">

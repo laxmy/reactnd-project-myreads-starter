@@ -62,7 +62,7 @@ class BookSearch extends Component
       <div className="search-books-bar">
         <Link className="close-search" to="/">Close</Link>
         <div className="search-books-input-wrapper">
-        <DebounceInput minLength={1} debounceTimeout={200} placeholder="Search by title or author" onInput={(event) => this.updateSearchQuery(event.target.value)}/>
+        <DebounceInput minLength={0} debounceTimeout={200} placeholder="Search by title or author" onChange={(event) => this.updateSearchQuery(event.target.value)}/>
         </div>
       </div>
       <div className="search-books-results">
