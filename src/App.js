@@ -1,9 +1,10 @@
 import React from 'react'
+import { Link , Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-import './App.css'
 import BookShelf from './BookShelf'
 import BookSearch from './BookSearch'
-import { Link , Route } from 'react-router-dom'
+import './App.css'
+
 
 class BooksApp extends React.Component {
   state = {
@@ -22,23 +23,12 @@ class BooksApp extends React.Component {
   ChangeBookShelf = (book, value)=>
   {
     if(book.shelf !== value){
-      //update : if value is none and book already present in shelf, remove
-      //if value = anything else update it, if already in shelf or add the book to shelf
       BooksAPI.update(book, value).then(() => {
-          let currentState = this.state.books;
-          if (value ==='none')
-          {
-            currentState = currentState.filter(eachBook => eachBook.id !== book.id);
-          }
-          else
-          {
-             let bookToUpdate = currentState.find(bookinShelf =>bookinShelf.id === book.id);
-             book.shelf = value;
-             bookToUpdate ? bookToUpdate.shelf = value : currentState.push(book);
-          }
-          this.setState(()=> ({books: currentState}));
-        })
-
+        book.shelf = value;
+        this.setState(currentState => ({
+        books: currentState.books.filter(b => b.id !== book.id).concat(book)
+      }));
+      })
     }
   }
 

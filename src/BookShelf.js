@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Book from './Book'
 import PropTypes from 'prop-types'
+import Book from './Book'
 
 
 class BookShelf extends Component
@@ -11,7 +11,7 @@ class BookShelf extends Component
       <h2 className="bookshelf-title">{ this.props.shelfTitle}</h2>
         <div className="bookshelf-books">
           <ol className="books-grid">
-          { this.props.books.map((book) =>
+          { this.props.books.map((book) => book &&
             (
               <li key ={book.id}>
               <Book book={book} onChangeBookShelf= {this.props.onChangeBookShelf}/>
@@ -25,7 +25,7 @@ class BookShelf extends Component
 }
 BookShelf.propTypes = {
   books: PropTypes.array.isRequired,
-  shelfTitle: PropTypes.array.isRequired,
+  shelfTitle: PropTypes.string.isRequired,
   onChangeBookShelf: PropTypes.func.isRequired,
 }
 export default BookShelf

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import * as BooksAPI from './BooksAPI'
-import Book from './Book'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {DebounceInput} from 'react-debounce-input';
+import {DebounceInput} from 'react-debounce-input'
+import * as BooksAPI from './BooksAPI'
+import Book from './Book'
 
 
 class BookSearch extends Component
@@ -27,7 +27,7 @@ class BookSearch extends Component
   /*
   @description: Gets books from the search API according to the search query and updates the shelves value of the SearchResult using the props.On every response checks the current state of searchQuery before updating the Response
   */
-  getBooks = () => {
+  getBooks = () =>{
     if(!this.state.searchQuery)
     {
       this.setState((prevState)=> ({ searchResult: [] }));
@@ -36,24 +36,24 @@ class BookSearch extends Component
 
     BooksAPI.search(this.state.searchQuery).then((bookObjects)=>
     {
-      if(!bookObjects || bookObjects.error || !this.state.searchQuery)
+      if(!bookObjects || !bookObjects.length || !this.state.searchQuery)
       {
         this.setState((prevState)=> ({ searchResult: [] }));
         return;
       }
-      bookObjects = bookObjects.map((book) =>
+      const bookResults = bookObjects.map((book) =>
       {
-        let bookInShelf = this.props.booksCurrentlyInShelves.find(bookInShelf => bookInShelf.id === book.id);
+        const bookInShelf = this.props.booksCurrentlyInShelves.find(bookInShelf => bookInShelf.id === book.id);
         book.shelf= bookInShelf ? bookInShelf.shelf : 'none';
         return book;
       });
-      this.setState((prevState)=>({ searchResult:bookObjects }));
+      this.setState((prevState)=>({ searchResult: bookResults }));
     })
   }
 
   updateSearchQuery = (query) =>{
     this.setState(()=>({searchQuery: query}));
-    this. getBooks(query);
+    this.getBooks(query);
   }
 
   render(){
